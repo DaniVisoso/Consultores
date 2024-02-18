@@ -10,7 +10,20 @@ $usuario = $cn->real_escape_string($_POST['usuario']);
 
 $password = $cn->real_escape_string($_POST['password']);
 
+$passwordConfirm = $cn->real_escape_string($_POST['passwordConfirm']);
+
 $phone = $cn->real_escape_string($_POST['phone']);
+
+if($password != $passwordConfirm){
+    $_SESSION['wrongPassword'] = "Las contraseñas deben ser iguales";
+    $_SESSION['email'] = $email;
+    $_SESSION['usuario'] = $usuario;
+    $_SESSION['password'] = $password;
+    $_SESSION['passwordConfirm'] = $passwordConfirm;
+    $_SESSION['phone'] = $phone;
+    header("Location: ../views/registro.php");
+    exit;
+}
 
 $sql = "SELECT * FROM `usuarios` WHERE email = '$email' LIMIT 1;";
 
@@ -22,7 +35,12 @@ if($resultado){
 
         $_SESSION['UserID'] = null;
         $_SESSION['msg'] = "Ya existe un usuario con el este email";
-        header("Location: ../views/index.php");
+        $_SESSION['email'] = $email;
+        $_SESSION['usuario'] = $usuario;
+        $_SESSION['password'] = $password;
+        $_SESSION['passwordConfirm'] = $passwordConfirm;
+        $_SESSION['phone'] = $phone;
+        header("Location: ../views/registro.php");
         exit;
        
         
@@ -34,20 +52,34 @@ if($resultado){
             $_SESSION['UserID'] = $id;
             $_SESSION['UserName'] = $usuario;
             $_SESSION['msg'] = "Usuario registrado correctamente";
+            $_SESSION['email'] = null;
+            $_SESSION['usuario'] = null;
+            $_SESSION['password'] = null;
+            $_SESSION['passwordConfirm'] = null;
+            $_SESSION['phone'] = null;
             header("Location: ../views/index.php");
             exit;
         } else{
             $_SESSION['UserID'] = null;
             $_SESSION['msg'] .= "Error en la conexion a base de datos";
-            header("Location: ../views/index.php");
+            $_SESSION['email'] = null;
+            $_SESSION['usuario'] = null;
+            $_SESSION['password'] = null;
+            $_SESSION['passwordConfirm'] = null;
+            $_SESSION['phone'] = null;
+            header("Location: ../views/registro.php");
             exit;
         }
-       
     }
 }else{
     $_SESSION['UserID'] = null;
-    $_SESSION['msg'] .= "Error en la conexion a base de datos";
-    header("Location: ../views/index.php");
+    $_SESSION['msg'] = "Error en la conexion a base de datos";
+    $_SESSION['email'] = null;
+    $_SESSION['usuario'] = null;
+    $_SESSION['password'] = null;
+    $_SESSION['passwordConfirm'] = null;
+    $_SESSION['phone'] = null;
+    header("Location: ../views/registro.php");
     exit;
 }
 
